@@ -1,3 +1,3 @@
-const Workout = reqwuire("./Workout");
+const Workout = require("./Workout.js");
 
 module.exports = { Workout };

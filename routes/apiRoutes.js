@@ -1,6 +1,6 @@
 const app = require("express").Router();
-const { Workout } = require("../models");
-const db = require("../models");
+const { Workout } = require("../models/");
+const db = require("../models/");
 
 app.get("/workouts", (req, res) => {
   db.Workout.find({})
@@ -19,9 +19,9 @@ app.get("/workouts/range", (req, res) => {
         totalDuration: { $sum: "$exercises.duration" },
       },
     },
-    { $sort: { day: -1 } },
-    { $limit: 7 },
   ])
+    .sort({ day: -1 })
+    .limit(7)
     .then((dbWorkouts) => {
       res.json(dbWorkouts);
     })
@@ -31,6 +31,7 @@ app.get("/workouts/range", (req, res) => {
 });
 
 app.put("/workouts/:id", (req, res) => {
+  console.log("here");
   db.Workout.findByIdAndUpdate(
     req.params.id,
     { $push: { exercises: req.body } },
@@ -44,13 +45,13 @@ app.put("/workouts/:id", (req, res) => {
     });
 });
 
-app.post("/api/workouts", ({ body }, res) => {
-  db.Workout.create(body)
+app.post("/workouts", (req, res) => {
+  db.Workout.create(req.body)
     .then((dbWorkouts) => {
       res.json(dbWorkouts);
     })
     .catch((err) => {
-      res.status(400).json(err);
+      res.json(err);
     });
 });
 
